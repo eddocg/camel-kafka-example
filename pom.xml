@@ -18,6 +18,7 @@
 		<java.version>1.8</java.version>
 		<camel.version>2.25.1</camel.version>
 		<spring.boot-version>2.2.6.RELEASE</spring.boot-version>
+		<ojdbc7.version>12.1.0.2</ojdbc7.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -52,6 +53,32 @@
 			<artifactId>camel-spring</artifactId>
 			<version>${camel.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-sql</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jetty</artifactId>
+			<version>${camel.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+
+		<dependency>
+			<groupId>com.oracle.ojdbc</groupId>
+			<artifactId>ojdbc8</artifactId>
+			<version>19.3.0.0</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

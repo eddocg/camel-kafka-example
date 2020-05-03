@@ -23,6 +23,20 @@
     <!-- END SNIPPET: e1 -->
     <!-- START SNIPPET: e2 -->
 
+    <!-- ORACLE DB -->
+    <bean id="oracleDS"
+             class="com.eddocg.db.OracleDS">
+    </bean>
+
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="oracleDS"/>
+    </bean>
+
+    <bean id="recordsDAO" depends-on="oracleDS"
+             class="com.eddocg.dao.impl.JdbcRecordsDAO">
+        <constructor-arg ref="oracleDS" />
+    </bean>
+
     <bean
             class="org.apache.camel.component.properties.PropertiesComponent" id="properties">
         <property name="location" value="classpath:application.properties"/>
@@ -30,14 +44,33 @@
     <bean class="org.apache.camel.component.kafka.KafkaComponent" id="kafka">
         <property name="brokers" value="${kafka.bootstrap.url}"/>
     </bean>
+
+
+    <bean id="getAllRecordsProcessor"
+             class="com.eddocg.processors.GetAllRecordsProcessor" />
     <!--bean
             class="org.apache.camel.example.kafka.offsetRepository.KafkaProcessor" id="kafkaProcessor"/-->
     <!-- END SNIPPET: e2 -->
     <!-- START SNIPPET: e3 -->
     <camelContext id="camel" xmlns="http://camel.apache.org/schema/spring">
-        <route id="consumer-route1">
+        <!--route id="consumer-route1">
             <from id="kafka-consumer-1" uri="kafka:{{consumer.topic}}?groupId={{consumer.group}}"/>
             <log id="route-log-1" message="consumer >>> ${body}"/>
+        </route-->
+
+        <route id="db-start">
+            <!--from id="db-start-direct" uri="jetty:http://0.0.0.0:8181/get-records?httpMethodRestrict=GET/"/-->
+            <from id="db-start-direct" uri="jetty:http://0.0.0.0:8181/get-records?disableStreamCache=true&amp;httpMethodRestrict=GET"/>
+            <log id="route-log-1" message="db start"/>
+
+            <process ref="getAllRecordsProcessor" />
+
+            <log message="records: ${body}}"/>
+            <split>
+                <simple>${body}</simple>
+                <convertBodyTo type="java.lang.String" />
+                <log id="route-log-1" message="record in split: ${body}}"/>
+            </split>
         </route>
 
     </camelContext>
